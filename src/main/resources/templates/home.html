@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Accueil - TiTravay</title>
+</head>
+<body>
+<h2>Bienvenue sur TiTravay !</h2>
+<p>Vous êtes connecté.</p>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Se déconnecter</button>
+</form>
+<p th:if="${#authorization.expression('isAuthenticated()')}">
+    ✅ Connecté en tant que <strong th:text="${#authentication.name}"></strong>
+</p>
+
+<p th:unless="${#authorization.expression('isAuthenticated()')}">
+    ❌ Vous n'êtes pas connecté.
+</p>
+
+</body>
+</html>
