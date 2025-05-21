@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Détail - ' + ${service.titre}">Détail du service</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header>
+    <div class="header-container">
+        <a href="/" class="logo">TiTravay</a>
+
+        <div class="search-bar">
+            <input type="text" placeholder="Rechercher des prestations de service...">
+            <button class="search-button">🔍</button>
+        </div>
+
+        <a href="/services/new"><button class="post-button"><span class="plus-icon">+</span> Proposer un service</button></a>
+
+        <div class="user-menu">
+            <a href="#" class="menu-item">
+                <span class="menu-icon">✉️</span> Messages
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">👤</span> Compte
+            </a>
+        </div>
+    </div>
+</header>
+
+<nav>
+    <div class="nav-container">
+        <a href="#" class="nav-item">Bricolage</a>
+        <a href="#" class="nav-item">Jardinage</a>
+        <a href="#" class="nav-item">Ménage</a>
+        <a href="#" class="nav-item">Informatique</a>
+        <a href="#" class="nav-item">Cours particuliers</a>
+        <a href="#" class="nav-item">Beauté & Bien-être</a>
+        <a href="#" class="nav-item">Transport</a>
+        <a href="#" class="nav-item">Assistance administrative</a>
+        <a href="#" class="nav-item">Événementiel</a>
+        <a href="#" class="nav-item">Autres</a>
+    </div>
+</nav>
+
+<section style="padding: 40px 20px; background-color: #F8FAFC; min-height: 100vh;">
+    <div style="max-width: 1100px; margin: auto; display: grid; grid-template-columns: 2fr 1fr; gap: 32px;">
+
+        <!-- Partie gauche -->
+        <div style="background: white; padding: 24px; border-radius: var(--border-radius); box-shadow: var(--box-shadow);">
+            <img th:src="${service.imageUrl}" alt="Image du service" style="width: 100%; border-radius: var(--border-radius); margin-bottom: 24px;" />
+
+            <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 12px; color: var(--primary-color);" th:text="${service.titre}">Titre du service</h1>
+            <p style="font-size: 18px; font-weight: 600; color: #334155; margin-bottom: 8px;" th:text="${service.prix + ' €'}">Prix</p>
+            <p style="color: #64748B;" th:text="'Publié le ' + ${dateFormatee} + ' à ' + ${service.localisation}">Date et lieu</p>
+
+                        <div style="margin-top: 24px;">
+                <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Description</h2>
+                <p style="line-height: 1.6; color: #475569;" th:text="${service.description}">Description du service ici.</p>
+            </div>
+        </div>
+
+<!-- Partie droite-->
+        <div style="background: white; padding: 24px; border-radius: var(--border-radius); box-shadow: var(--box-shadow);">
+            <div style="display: flex; align-items: center; margin-bottom: 16px;">
+                <div style="width: 48px; height: 48px; background-color: #E2E8F0; border-radius: 50%; margin-right: 12px;">
+                    <!-- Placeholder ou image de profil -->
+                </div>
+                <div>
+                    <strong style="display: block; font-size: 16px;" th:text="${service.auteur}">Nom utilisateur</strong>
+                </div>
+            </div>
+
+            <button class="post-button" style="width: 100%; padding: 12px; border: none; border-radius: var(--border-radius); font-weight: 600; background-color: var(--secondary-color); color: white;">
+                Contacter
+            </button>
+
+            <p style="text-align: center; font-size: 12px; color: #94A3B8; margin-top: 12px;">
+                Paiement sécurisé disponible
+            </p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>© 2025 TiTravay - La plateforme de services entre particuliers</p>
+</footer>
+</body>
+</html>
