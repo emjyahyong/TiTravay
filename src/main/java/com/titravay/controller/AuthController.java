@@ -1,6 +1,8 @@
 package com.titravay.controller;
 
+import com.titravay.model.Service;
 import com.titravay.model.User;
+import com.titravay.repository.ServiceRepository;
 import com.titravay.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,8 +14,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Controller
 public class AuthController {
+
+    @Autowired
+    private ServiceRepository serviceRepository;
 
     @Autowired
     private UserRepository userRepo;
@@ -27,10 +34,12 @@ public class AuthController {
     }
 
     @GetMapping("/home")
-    public String home() {
-        return "home";
+    public String home(Model model) {
+        List<Service> Services = (List<Service>) serviceRepository.findAll();
+        model.addAttribute("services", Services);
+        return "home"; // Fichier home.html dans /templates
     }
-
+    
     @PostMapping("/logout")
     public String logout() {
         return "login";

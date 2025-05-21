@@ -15,12 +15,12 @@ public class TiTravayApplication {
         SpringApplication.run(TiTravayApplication.class, args);
     }
 
-    @Bean
-    CommandLineRunner init(UserRepository repo, PasswordEncoder encoder) {
-        return args -> {
-            if (repo.findByUsername("admin").isEmpty()) {
-                repo.save(new User(null, "admin", encoder.encode("1234"), "ROLE_ADMIN"));
-            }
-        };
-    }
+//    @Bean
+//    CommandLineRunner init(UserRepository repo, PasswordEncoder encoder) {
+//        return args -> {
+//            if (repo.findByUsername("admin").isEmpty()) {
+//                repo.save(new User(null, "admin", encoder.encode("1234"), "ROLE_ADMIN"));
+//            }
+//        };
+//    }
 }

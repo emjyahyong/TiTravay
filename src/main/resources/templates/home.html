@@ -37,7 +37,7 @@
             <button class="search-button">🔍</button>
         </div>
 
-        <button class="post-button"><span class="plus-icon">+</span> Proposer un service</button>
+        <a href="/services/new"><button class="post-button"><span class="plus-icon">+</span> Proposer un service</button></a>
 
         <div class="user-menu">
 <!--            <a href="#" class="menu-item">-->
@@ -113,6 +113,22 @@
 <section class="featured-services">
     <h2 class="section-title">Services populaires près de chez vous</h2>
     <div class="service-cards">
+        <div class="services-container">
+            <div class="service-card" th:each="service : ${services}">
+                <div class="service-image">
+                    <img th:src="@{${service.imageUrl}}" alt="Image du service" />
+                </div>
+                <div class="service-info">
+                    <div class="service-title" th:text="${service.titre}">Titre du service</div>
+                    <div class="service-price" th:text="${service.prix + '€/h'}">Prix</div>
+                    <div class="service-location">
+                        <span class="location-icon">📍</span>
+                        <span th:text="${service.localisation}">Localisation</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="service-card">
             <div class="service-image">Photo du service</div>
             <div class="service-info">
