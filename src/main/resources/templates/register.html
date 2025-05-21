@@ -1,28 +1,39 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head><title>Inscription</title></head>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inscription - TiTravay</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
 <body>
-<h2>Créer un compte</h2>
-<form th:action="@{/register}" method="post">
-    <div>
-        <label>Nom d'utilisateur :</label>
-        <input type="text" name="username" required />
+<section style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background-color: #F8FAFC;">
+    <div style="background: white; padding: 40px; border-radius: var(--border-radius); box-shadow: var(--box-shadow); width: 100%; max-width: 400px;">
+        <h2 style="font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 24px; text-align: center;">Créer un compte</h2>
+        <form th:action="@{/register}" method="post" style="display: flex; flex-direction: column; gap: 16px;">
+            <div>
+                <label for="username" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--dark-text);">Nom d'utilisateur</label>
+                <input type="text" id="username" name="username" required
+                       style="width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: var(--border-radius); font-size: 15px;">
+            </div>
+            <div>
+                <label for="password" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--dark-text);">Mot de passe</label>
+                <input type="password" id="password" name="password" required
+                       style="width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: var(--border-radius); font-size: 15px;">
+            </div>
+            <div>
+                <label for="role" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--dark-text);">Rôle</label>
+                <select name="role" id="role"
+                        style="width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: var(--border-radius); font-size: 15px;">
+                    <option value="ROLE_USER">Utilisateur</option>
+                    <option value="ROLE_ADMIN">Administrateur</option>
+                </select>
+            </div>
+            <button type="submit" class="post-button" style="width: 100%;">S'inscrire</button>
+        </form>
+
+        <p th:if="${error}" style="color: red; margin-top: 16px; text-align: center;">[[${error}]]</p>
     </div>
-    <div>
-        <label>Mot de passe :</label>
-        <input type="password" name="password" required />
-    </div>
-    <div>
-        <label>Rôle :</label>
-        <select name="role">
-            <option value="ROLE_USER">Utilisateur</option>
-            <option value="ROLE_ADMIN">Administrateur</option>
-        </select>
-    </div>
-    <div>
-        <button type="submit">S'inscrire</button>
-    </div>
-</form>
-<p th:if="${error}">[[${error}]]</p>
+</section>
 </body>
 </html>
