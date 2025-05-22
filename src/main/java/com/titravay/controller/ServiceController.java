@@ -1,7 +1,10 @@
 package com.titravay.controller;
 
-import com.titravay.model.Service;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import com.titravay.model.User;
+import com.titravay.repository.UserRepository;
+import com.titravay.model.Service;
 import com.titravay.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,10 +16,14 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("services")
 public class ServiceController {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private ServiceRepository serviceRepository;
@@ -30,11 +37,25 @@ public class ServiceController {
 
     @PostMapping("/add")
     public String submitForm(@ModelAttribute Service service) {
+        // Récupérer l'utilisateur connecté (nom d'utilisateur)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        // Charger l'objet User complet depuis la base
+        Optional<User> utilisateurConnecte = userRepository.findByUsername(username);
+
+        // Vérifier que l'utilisateur existe
+        if (utilisateurConnecte.isPresent()) {
+            service.setAuteur(utilisateurConnecte.get());
+        } else {
+            // Gérer le cas où l'utilisateur n'est pas trouvé (sécurité / erreur)
+            throw new RuntimeException("Utilisateur connecté non trouvé dans la base");
+        }
+
         service.setDatePublication(LocalDateTime.now());
         service.setStatut(Service.StatutService.ACTIVE);
-        // Si tu veux associer l'utilisateur connecté :
-        // service.setAuteur(authenticatedUser);
         serviceRepository.save(service);
+
         return "redirect:/home";
     }
 
