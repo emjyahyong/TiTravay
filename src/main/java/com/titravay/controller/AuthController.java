@@ -5,8 +5,6 @@ import com.titravay.model.User;
 import com.titravay.repository.ServiceRepository;
 import com.titravay.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +29,11 @@ public class AuthController {
     @GetMapping("/login")
     public String login() {
         return "login";
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        return "test";
     }
 
     @GetMapping("/home")

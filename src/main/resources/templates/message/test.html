@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Écouteur Sony MDR-EX15LP - TiTravay</title>
+    <style>
+        :root {
+            --primary-color: #3B82F6;
+            --secondary-color: #10B981;
+            --accent-color: #8B5CF6;
+            --light-bg: #F0F9FF;
+            --gray-text: #64748B;
+            --dark-text: #1E293B;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: #F8FAFC;
+            color: var(--dark-text);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            gap: 24px;
+        }
+
+        .sidebar {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--dark-text);
+        }
+
+        .service-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .service-item:hover {
+            background-color: var(--light-bg);
+        }
+
+        .service-item.active {
+            background-color: var(--light-bg);
+            border-left-color: var(--primary-color);
+        }
+
+        .service-image-small {
+            width: 50px;
+            height: 50px;
+            background-color: #E2E8F0;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .service-info-small {
+            flex: 1;
+        }
+
+        .service-title-small {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark-text);
+            margin-bottom: 4px;
+        }
+
+        .service-meta {
+            font-size: 12px;
+            color: var(--gray-text);
+        }
+
+        .main-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 32px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: var(--gray-text);
+            margin-bottom: 24px;
+        }
+
+        .breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .service-header {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .service-image-main {
+            width: 200px;
+            height: 200px;
+            background-color: #E2E8F0;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-text);
+            flex-shrink: 0;
+        }
+
+        .service-details {
+            flex: 1;
+        }
+
+        .service-title-main {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--dark-text);
+            margin-bottom: 12px;
+        }
+
+        .service-price-main {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 16px;
+        }
+
+        .service-location-main {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gray-text);
+            margin-bottom: 16px;
+        }
+
+        .description-section {
+            margin-bottom: 32px;
+        }
+
+        .section-title-main {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 16px;
+        }
+
+        .description-text {
+            color: var(--gray-text);
+            line-height: 1.6;
+        }
+
+        .criteria-section {
+            background-color: var(--light-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 32px;
+        }
+
+        .criteria-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .criteria-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .criteria-label {
+            color: var(--gray-text);
+            font-size: 14px;
+        }
+
+        .criteria-value {
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .contact-panel {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--box-shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .seller-info {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .seller-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 24px;
+        }
+
+        .seller-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 8px;
+        }
+
+        .seller-rating {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .star {
+            color: #FFC107;
+            font-size: 16px;
+        }
+
+        .rating-count {
+            color: var(--gray-text);
+            font-size: 14px;
+            margin-left: 4px;
+        }
+
+        .seller-activity {
+            font-size: 12px;
+            color: var(--gray-text);
+            margin-bottom: 16px;
+        }
+
+        .seller-stats {
+            background-color: var(--light-bg);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .stat-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-icon {
+            font-size: 16px;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 12px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563EB;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 12px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+        }
+
+        .messages-section {
+            margin-top: 24px;
+            border-top: 1px solid #E2E8F0;
+            padding-top: 24px;
+        }
+
+        .messages-header {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 16px;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            max-width: 80%;
+        }
+
+        .message.sent {
+            background-color: var(--primary-color);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received {
+            background-color: #F1F5F9;
+            color: var(--dark-text);
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .message-input {
+            margin-top: 16px;
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .message-textarea {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #E2E8F0;
+            border-radius: var(--border-radius);
+            resize: vertical;
+            min-height: 40px;
+            max-height: 120px;
+            font-family: inherit;
+        }
+
+        .message-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        }
+
+        .send-button {
+            background-color: #FFA726;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background-color 0.2s;
+        }
+
+        .send-button:hover {
+            background-color: #FF9800;
+        }
+
+        .notification-badge {
+            background-color: #FF4444;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+        }
+
+        .status-indicator {
+            font-size: 12px;
+            color: var(--gray-text);
+            text-align: center;
+            margin: 8px 0;
+            font-style: italic;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding: 16px;
+            }
+
+            .sidebar {
+                order: 2;
+                position: static;
+            }
+
+            .contact-panel {
+                order: 3;
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .service-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .service-image-main {
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h3>Sélectionner</h3>
+
+        <div class="service-item active">
+            <div class="service-image-small"></div>
+            <div class="service-info-small">
+                <div class="service-title-small">Écouteur sony M...</div>
+                <div class="service-meta">C'est possible pour vo...</div>
+                <div class="service-meta">jm - 5 mai 2025</div>
+            </div>
+        </div>
+
+        <div class="service-item">
+            <div class="service-image-small"></div>
+            <div class="service-info-small">
+                <div class="service-title-small">Écouteurs</div>
+                <div class="service-meta">Annonce supprimée</div>
+                <div class="service-meta">touloustpierre - 29 avr. 20...</div>
+            </div>
+        </div>
+
+        <div class="service-item">
+            <div class="service-image-small"></div>
+            <div class="service-info-small">
+                <div class="service-title-small">Sac de trail</div>
+                <div class="service-meta">Annonce supprimée</div>
+                <div class="service-meta">Clémence - 29 avr. 2025</div>
+            </div>
+        </div>
+
+        <div class="service-item">
+            <div class="service-image-small"></div>
+            <div class="service-info-small">
+                <div class="service-title-small">Planches à décou...</div>
+                <div class="service-meta">Bonjour oui</div>
+                <div class="service-meta">lina - 15 mars 2025</div>
+            </div>
+        </div>
+
+        <div class="service-item">
+            <div class="service-image-small"></div>
+            <div class="service-info-small">
+                <div class="service-title-small">Panier à linge</div>
+                <div class="service-meta">Annonce supprimée</div>
+                <div class="service-meta">Camille - 7 mars 2025</div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <nav class="breadcrumb">
+            <a href="#">Accueil</a> > <a href="#">Audio</a> > Écouteur Sony MDR-EX15LP
+        </nav>
+
+        <div class="service-header">
+            <div class="service-image-main">
+                Photo du produit
+            </div>
+            <div class="service-details">
+                <h1 class="service-title-main">Écouteur Sony MDR-EX15LP</h1>
+                <div class="service-price-main">10 €</div>
+                <div class="service-location-main">
+                    <span>📍</span>
+                    <span>Réunion</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="description-section">
+            <h2 class="section-title-main">Description</h2>
+            <p class="description-text">
+                Bonjour je vend un paire d'écouteurs Sony MDR-EX15LP en très bon état.
+                Ils ont été très peu utilisés et fonctionnent parfaitement.
+                La qualité sonore est excellente pour ce modèle d'entrée de gamme.
+                <br><br>
+                Inclus : écouteurs + embouts de rechange
+                <br><br>
+                Possibilité de remise en main propre sur Saint-Denis ou envoi si acheteur sérieux.
+            </p>
+        </div>
+
+        <div class="criteria-section">
+            <h2 class="section-title-main">Critères</h2>
+            <div class="criteria-item">
+                <span class="criteria-label">État</span>
+                <span class="criteria-value">Très bon état</span>
+            </div>
+            <div class="criteria-item">
+                <span class="criteria-label">Type de produit</span>
+                <span class="criteria-value">Écouteurs intra-auriculaires</span>
+            </div>
+            <div class="criteria-item">
+                <span class="criteria-label">Marque</span>
+                <span class="criteria-value">Sony</span>
+            </div>
+            <div class="criteria-item">
+                <span class="criteria-label">Univers</span>
+                <span class="criteria-value">Audio</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Contact Panel -->
+    <aside class="contact-panel">
+        <div class="seller-info">
+            <div class="seller-avatar">JM</div>
+            <div class="seller-name">jm</div>
+            <div class="seller-rating">
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="rating-count">(5)</span>
+            </div>
+            <div class="seller-activity">Dernière activité il y a 43 minutes</div>
+        </div>
+
+        <div class="seller-stats">
+            <div class="stat-item">
+                <span class="stat-icon">📍</span>
+                <span>Réunion</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">👤</span>
+                <span>Membre depuis mai 2014</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">🔒</span>
+                <span>5 transactions réalisées avec le paiement sécurisé</span>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-primary">Faire une offre</button>
+            <button class="btn-secondary">Acheter</button>
+        </div>
+
+        <!-- Messages Section -->
+        <div class="messages-section">
+            <div class="messages-header">💬 Conversation</div>
+
+            <div class="message received">
+                <div>Bonjour jm, votre annonce m'intéresse ! Est-elle toujours disponible ?</div>
+                <div class="message-time">3 mai 2025 - 20:29</div>
+            </div>
+
+            <div class="message sent">
+                <div>Bonsoir oui c'est toujours disponible</div>
+                <div class="message-time">3 mai 2025 - 20:32</div>
+            </div>
+
+            <div class="message sent">
+                <div>Si intéressé</div>
+                <div class="message-time">3 mai 2025 - 20:32</div>
+            </div>
+
+            <div class="message received">
+                <div>Ok je n'ai pas les notifications sur le boncon texter moi sur le num suivant</div>
+                <div class="message-time">5 mai 2025 - 17:48</div>
+            </div>
+
+            <div class="status-indicator">✓ Lu</div>
+
+            <div class="message-input">
+                <textarea class="message-textarea" placeholder="Écrivez votre message" rows="1"></textarea>
+                <button class="send-button">→</button>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<script>
+    // Auto-resize textarea
+    const textarea = document.querySelector('.message-textarea');
+    textarea.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+    });
+
+    // Send message functionality
+    const sendButton = document.querySelector('.send-button');
+    sendButton.addEventListener('click', function() {
+        const message = textarea.value.trim();
+        if (message) {
+            // Create new message element
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message sent';
+            messageDiv.innerHTML = `
+                    <div>${message}</div>
+                    <div class="message-time">${new Date().toLocaleDateString('fr-FR')} - ${new Date().toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})}</div>
+                `;
+
+            // Insert before message input
+            const messagesSection = document.querySelector('.messages-section');
+            const messageInput = document.querySelector('.message-input');
+            messagesSection.insertBefore(messageDiv, messageInput);
+
+            // Clear textarea
+            textarea.value = '';
+            textarea.style.height = 'auto';
+
+            // Scroll to bottom
+            messagesSection.scrollTop = messagesSection.scrollHeight;
+        }
+    });
+
+    // Send on Enter key
+    textarea.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendButton.click();
+        }
+    });
+</script>
+</body>
+</html>
