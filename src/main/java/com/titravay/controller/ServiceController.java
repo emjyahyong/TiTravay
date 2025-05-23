@@ -1,10 +1,10 @@
 package com.titravay.controller;
 
+import com.titravay.model.Services;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.titravay.model.User;
 import com.titravay.repository.UserRepository;
-import com.titravay.model.Service;
 import com.titravay.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,13 +30,13 @@ public class ServiceController {
 
     @GetMapping("/new")
     public String createForm(Model model) {
-        model.addAttribute("service", new Service());
-        model.addAttribute("categories", Service.Categorie.values());
+        model.addAttribute("service", new Services());
+        model.addAttribute("categories", Services.Categorie.values());
         return "service/form";
     }
 
     @PostMapping("/add")
-    public String submitForm(@ModelAttribute Service service) {
+    public String submitForm(@ModelAttribute Services service) {
         // Récupérer l'utilisateur connecté (nom d'utilisateur)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -53,7 +53,7 @@ public class ServiceController {
         }
 
         service.setDatePublication(LocalDateTime.now());
-        service.setStatut(Service.StatutService.ACTIVE);
+        service.setStatut(Services.StatutService.ACTIVE);
         serviceRepository.save(service);
 
         return "redirect:/home";
@@ -61,7 +61,7 @@ public class ServiceController {
 
     @GetMapping("/{id}")
     public String showServiceDetail(@PathVariable Long id, Model model) {
-        Service service = serviceRepository.findById(id)
+        Services service = serviceRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.FRENCH);
         String dateFormatee = service.getDatePublication().format(formatter);

@@ -4,10 +4,9 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Entity
-public class Service implements Serializable {
+public class Services implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
@@ -53,7 +52,7 @@ public class Service implements Serializable {
         ACTIVE, INACTIVE
     }
 
-    public Service(Long id, String titre, String description, Double prix, LocalDateTime datePublication, String localisation, String imageUrl, Categorie categorie, User auteur, StatutService statut) {
+    public Services(Long id, String titre, String description, Double prix, LocalDateTime datePublication, String localisation, String imageUrl, Categorie categorie, User auteur, StatutService statut) {
         this.id = id;
         this.titre = titre;
         this.description = description;
@@ -66,7 +65,7 @@ public class Service implements Serializable {
         this.statut = statut;
     }
 
-    public Service() {
+    public Services() {
     }
 
     public String getTitre() {

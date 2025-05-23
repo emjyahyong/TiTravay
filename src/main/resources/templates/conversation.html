@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+<h1>Conversation</h1>
+<div id="chat-box" style="border:1px solid #ccc; padding:1em; height:300px; overflow-y:scroll;"></div>
+<input type="text" id="message-input" placeholder="Tape ton message" />
+<button id="send-btn">Envoyer</button>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const conversationId = /*[[${conversationId}]]*/ 0;
+    const currentUser = /*[['${currentUser.username}']]*/ 'anonymous';
+    /*]]>*/
+</script>
+
+<script>
+    const socket = new SockJS('/ws');
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function (frame) {
+        console.log('Connecté : ' + frame);
+
+        // S'abonner aux messages de cette conversation
+        stompClient.subscribe('/topic/conversations/' + conversationId, function (messageOutput) {
+            const msg = JSON.parse(messageOutput.body);
+            const chatBox = document.getElementById("chat-box");
+            chatBox.innerHTML += `<div><strong>${msg.sender.username}</strong>: ${msg.content}</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    });
+
+    document.getElementById("send-btn").addEventListener("click", function () {
+        const content = document.getElementById("message-input").value;
+
+        const message = {
+            sender: {
+                username: currentUser
+            },
+            content: content
+        };
+
+        stompClient.send("/app/chat/" + conversationId, {}, JSON.stringify(message));
+        document.getElementById("message-input").value = '';
+    });
+</script>
+
+</body>
+</html>

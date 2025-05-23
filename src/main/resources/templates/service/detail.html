@@ -2,6 +2,8 @@
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title th:text="'Détail - ' + ${service.titre}">Détail du service</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -11,21 +13,16 @@
 <header>
     <div class="header-container">
         <a href="/" class="logo">TiTravay</a>
-
         <div class="search-bar">
             <input type="text" placeholder="Rechercher des prestations de service...">
             <button class="search-button">🔍</button>
         </div>
-
-        <a href="/services/new"><button class="post-button"><span class="plus-icon">+</span> Proposer un service</button></a>
-
+        <a href="/services/new">
+            <button class="post-button"><span class="plus-icon">+</span> Proposer un service</button>
+        </a>
         <div class="user-menu">
-            <a href="#" class="menu-item">
-                <span class="menu-icon">✉️</span> Messages
-            </a>
-            <a href="#" class="menu-item">
-                <span class="menu-icon">👤</span> Compte
-            </a>
+            <a href="#" class="menu-item"><span class="menu-icon">✉️</span> Messages</a>
+            <a href="#" class="menu-item"><span class="menu-icon">👤</span> Compte</a>
         </div>
     </div>
 </header>
@@ -50,35 +47,38 @@
 
         <!-- Partie gauche -->
         <div style="background: white; padding: 24px; border-radius: var(--border-radius); box-shadow: var(--box-shadow);">
-            <img th:src="${service.imageUrl}" alt="Image du service" style="width: 100%; border-radius: var(--border-radius); margin-bottom: 24px;" />
-
-            <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 12px; color: var(--primary-color);" th:text="${service.titre}">Titre du service</h1>
-            <p style="font-size: 18px; font-weight: 600; color: #334155; margin-bottom: 8px;" th:text="${service.prix + ' €'}">Prix</p>
-            <p style="color: #64748B;" th:text="'Publié le ' + ${dateFormatee} + ' à ' + ${service.localisation}">Date et lieu</p>
-
-                        <div style="margin-top: 24px;">
+            <img th:src="${service.imageUrl}" alt="Image du service"
+                 style="width: 100%; border-radius: var(--border-radius); margin-bottom: 24px;" />
+            <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 12px; color: var(--primary-color);"
+                th:text="${service.titre}">Titre du service</h1>
+            <p style="font-size: 18px; font-weight: 600; color: #334155; margin-bottom: 8px;"
+               th:text="${service.prix + ' €'}">Prix</p>
+            <p style="color: #64748B;" th:text="'Publié le ' + ${dateFormatee} + ' à ' + ${service.localisation}">
+                Date et lieu</p>
+            <div style="margin-top: 24px;">
                 <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Description</h2>
                 <p style="line-height: 1.6; color: #475569;" th:text="${service.description}">Description du service ici.</p>
             </div>
         </div>
 
-<!-- Partie droite-->
+        <!-- Partie droite -->
         <div style="background: white; padding: 24px; border-radius: var(--border-radius); box-shadow: var(--box-shadow);">
             <div style="display: flex; align-items: center; margin-bottom: 16px;">
                 <div style="width: 48px; height: 48px; background-color: #E2E8F0; border-radius: 50%; margin-right: 12px;">
-                    <!-- Placeholder ou image de profil -->
+                    <!-- Image de profil -->
                 </div>
                 <div>
                     <strong style="display: block; font-size: 16px;"
                             th:text="${service.auteur != null && service.auteur.username != null ? service.auteur.username : 'Utilisateur introuvable'}">
                         Nom utilisateur
                     </strong>
-
                 </div>
             </div>
 
-            <button class="post-button" style="width: 100%; padding: 12px; border: none; border-radius: var(--border-radius); font-weight: 600; background-color: var(--secondary-color); color: white;">
-                Contacter
+            <!-- Bouton de conversation -->
+            <button id="btnConv" th:attr="data-id=${service.id}"
+                    style="width: 100%; padding: 12px; border: none; border-radius: var(--border-radius); font-weight: 600; background-color: var(--secondary-color); color: white;">
+                Démarrer conversation
             </button>
 
             <p style="text-align: center; font-size: 12px; color: #94A3B8; margin-top: 12px;">
@@ -91,59 +91,41 @@
 <footer>
     <p>© 2025 TiTravay - La plateforme de services entre particuliers</p>
 </footer>
+
+<!-- Script JavaScript -->
+<script>
+    document.getElementById('btnConv').addEventListener('click', () => {
+        const btn = document.getElementById('btnConv');
+        const serviceId = btn.getAttribute('data-id');
+
+        const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        if (!token || !header) {
+            console.error("CSRF token ou header manquant !");
+            return;
+        }
+
+        fetch(`/api/conversations/service/${serviceId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [header]: token
+            }
+        })
+            .then(res => {
+                if (!res.ok) throw new Error(`Erreur HTTP ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                window.location.href = `/conversations/${data.id}`;
+            })
+            .catch(err => {
+                console.error('Erreur lors de la création de la conversation:', err);
+                alert('Une erreur est survenue.');
+            });
+    });
+</script>
+
 </body>
 </html>
-
-<!--<section style="padding: 40px 20px; background-color: #F8FAFC; min-height: 100vh;">-->
-<!--    <div style="max-width: 1100px; margin: auto; display: grid; grid-template-columns: 2fr 1fr; gap: 32px;">-->
-
-<!--        &lt;!&ndash; Partie gauche : image + description &ndash;&gt;-->
-<!--        <div style="background: white; padding: 24px; border-radius: var(&#45;&#45;border-radius); box-shadow: var(&#45;&#45;box-shadow);">-->
-<!--            <img src="/chemin/vers/image.jpg" alt="Image de l'annonce" style="width: 100%; border-radius: var(&#45;&#45;border-radius); margin-bottom: 24px;">-->
-
-<!--            <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 12px; color: var(&#45;&#45;primary-color);">-->
-<!--                Lot de jeux de PC-->
-<!--            </h1>-->
-<!--            <p style="font-size: 18px; font-weight: 600; color: #334155; margin-bottom: 8px;">13 €</p>-->
-<!--            <p style="color: #64748B;">Publié le 21 mai 2025 à Saint-Junien</p>-->
-
-<!--            <div style="margin-top: 24px;">-->
-<!--                <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Description</h2>-->
-<!--                <p style="line-height: 1.6; color: #475569;">-->
-<!--                    Je vends un lot de jeux de PC comprenant : Crysis, Age of Empires III, Assassin's Creed, Call of Duty, etc.-->
-<!--                    Boîtes complètes, bon état.-->
-<!--                </p>-->
-<!--            </div>-->
-<!--        </div>-->
-
-<!--        &lt;!&ndash; Partie droite : profil du vendeur + boutons &ndash;&gt;-->
-<!--        <div style="background: white; padding: 24px; border-radius: var(&#45;&#45;border-radius); box-shadow: var(&#45;&#45;box-shadow);">-->
-<!--            <div style="display: flex; align-items: center; margin-bottom: 16px;">-->
-<!--                <div style="width: 48px; height: 48px; background-color: #E2E8F0; border-radius: 50%; margin-right: 12px;">-->
-<!--                    &lt;!&ndash; Placeholder image de profil &ndash;&gt;-->
-<!--                </div>-->
-<!--                <div>-->
-<!--                    <strong style="display: block; font-size: 16px;">Jérôme</strong>-->
-<!--                    <span style="color: #94A3B8;">42 annonces - ⭐ 5 (4 avis)</span>-->
-<!--                </div>-->
-<!--            </div>-->
-
-<!--            <p style="font-size: 14px; color: #64748B; margin-bottom: 16px;">-->
-<!--                Répond en moyenne en 30 min<br>-->
-<!--                Dernière activité : il y a 1 minute-->
-<!--            </p>-->
-
-<!--            <button class="post-button" style="width: 100%; margin-bottom: 12px;">Acheter</button>-->
-<!--            <button style="width: 100%; padding: 12px; border: 1px solid var(&#45;&#45;primary-color); border-radius: var(&#45;&#45;border-radius); font-weight: 600; background-color: white; color: var(&#45;&#45;primary-color); margin-bottom: 8px;">-->
-<!--                Faire une offre-->
-<!--            </button>-->
-<!--            <button style="width: 100%; padding: 12px; border: none; border-radius: var(&#45;&#45;border-radius); font-weight: 600; background-color: var(&#45;&#45;secondary-color); color: white;">-->
-<!--                Contacter-->
-<!--            </button>-->
-
-<!--            <p style="text-align: center; font-size: 12px; color: #94A3B8; margin-top: 12px;">-->
-<!--                Paiement sécurisé disponible-->
-<!--            </p>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</section>-->

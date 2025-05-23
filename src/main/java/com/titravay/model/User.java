@@ -1,5 +1,6 @@
 package com.titravay.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -16,9 +17,10 @@ public class User implements Serializable {
     private String password;
     private String role;
     @OneToMany(mappedBy = "auteur")
-    private List<Service> services;
+    @JsonIgnore
+    private List<Services> services;
 
-    public User(Long id, String username, String password, String role, List<Service> services) {
+    public User(Long id, String username, String password, String role, List<Services> services) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -26,11 +28,11 @@ public class User implements Serializable {
         this.services = services;
     }
 
-    public List<Service> getServices() {
+    public List<Services> getServices() {
         return services;
     }
 
-    public void setServices(List<Service> services) {
+    public void setServices(List<Services> services) {
         this.services = services;
     }
 
@@ -67,4 +69,19 @@ public class User implements Serializable {
     public void setRole(String role) {
         this.role = role;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+        return id != null && id.equals(user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 + (id != null ? id.hashCode() : 0);
+    }
+
 }

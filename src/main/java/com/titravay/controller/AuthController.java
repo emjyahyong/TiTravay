@@ -1,6 +1,6 @@
 package com.titravay.controller;
 
-import com.titravay.model.Service;
+import com.titravay.model.Services;
 import com.titravay.model.User;
 import com.titravay.repository.ServiceRepository;
 import com.titravay.repository.UserRepository;
@@ -38,7 +38,7 @@ public class AuthController {
 
     @GetMapping("/home")
     public String home(Model model) {
-        List<Service> Services = (List<Service>) serviceRepository.findAll();
+        List<Services> Services = (List<Services>) serviceRepository.findAll();
         model.addAttribute("services", Services);
         return "home"; // Fichier home.html dans /templates
     }
