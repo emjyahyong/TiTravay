@@ -118,7 +118,7 @@
                 return res.json();
             })
             .then(data => {
-                window.location.href = `/conversations/${data.id}`;
+                window.location.href = `/conversations/${data.id}/`;
             })
             .catch(err => {
                 console.error('Erreur lors de la création de la conversation:', err);
