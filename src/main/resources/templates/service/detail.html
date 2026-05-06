@@ -82,7 +82,7 @@
             </button>
 
             <p style="text-align: center; font-size: 12px; color: #94A3B8; margin-top: 12px;">
-                Paiement sécurisé disponible
+                Paiement sécurisé indisponible
             </p>
         </div>
     </div>
@@ -118,7 +118,14 @@
                 return res.json();
             })
             .then(data => {
-                window.location.href = `/conversations/${data.id}/`;
+                // Affiche tout l'objet data dans une alerte lisible
+                //alert("Données reçues :\n" + JSON.stringify(data, null, 2));
+
+                const currentUserId = data.participant1Id;
+                const otherUserId = data.participant2Id;
+                //alert(currentUserId);
+
+                window.location.href = `/conversations/${data.id}/${currentUserId}-${otherUserId}`;
             })
             .catch(err => {
                 console.error('Erreur lors de la création de la conversation:', err);
@@ -126,6 +133,7 @@
             });
     });
 </script>
+
 
 </body>
 </html>

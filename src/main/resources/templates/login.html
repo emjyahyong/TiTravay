@@ -23,7 +23,6 @@
             </div>
             <button type="submit" class="post-button" style="width: 100%;">Se connecter</button>
         </form>
-
         <p th:if="${param.error}" style="color: red; margin-top: 16px; text-align: center;">Nom d'utilisateur ou mot de passe invalide</p>
         <p th:if="${param.logout}" style="color: var(--secondary-color); margin-top: 16px; text-align: center;">Déconnecté avec succès</p>
     </div>
