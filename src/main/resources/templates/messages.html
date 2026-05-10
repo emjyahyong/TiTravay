@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf"        th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Mes messages — TiTravay</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/messages.css}">
+</head>
+<body class="messages-page">
+
+<!-- ── Sidebar ─────────────────────────────────────────────── -->
+<aside class="msgs-sidebar" id="msgsSidebar">
+
+    <div class="msgs-sidebar__header">
+        <a href="/home" class="msgs-back" aria-label="Retour à l'accueil">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="19" y1="12" x2="5" y2="12"/>
+                <polyline points="12 19 5 12 12 5"/>
+            </svg>
+        </a>
+        <h1 class="msgs-sidebar__title">Messages</h1>
+    </div>
+
+    <div class="msgs-sidebar__list" id="convList">
+
+        <!-- Conversation item (server-side render) -->
+        <div th:each="conv : ${conversations}"
+             th:attr="data-id=${conv.id},
+                      data-other=${conv.otherUsername},
+                      data-initial=${conv.otherInitial},
+                      data-service=${conv.serviceTitle}"
+             th:classappend="${conv.id == activeConvId} ? ' conv-item--active'"
+             class="conv-item"
+             role="button"
+             tabindex="0">
+
+            <div class="conv-item__avatar" th:text="${conv.otherInitial}">A</div>
+
+            <div class="conv-item__body">
+                <p class="conv-item__name"    th:text="${conv.otherUsername}">Nom</p>
+                <p class="conv-item__preview" th:text="${conv.lastMessagePreview}">Aperçu…</p>
+            </div>
+
+            <span th:if="${conv.unreadCount > 0}"
+                  class="conv-item__badge"
+                  th:text="${conv.unreadCount}">1</span>
+        </div>
+
+        <!-- État vide -->
+        <div th:if="${#lists.isEmpty(conversations)}" class="msgs-empty-sidebar">
+            <p>Aucune conversation pour le moment.</p>
+            <a href="/home" class="btn btn--primary btn--sm" style="margin-top:12px">
+                Explorer les services
+            </a>
+        </div>
+
+    </div>
+</aside>
+
+<!-- ── Panneau principal ────────────────────────────────────── -->
+<main class="msgs-panel" id="msgsPanel">
+
+    <!-- En-tête de conversation (affiché quand une conv est ouverte) -->
+    <div class="msgs-panel__header" id="panelHeader" hidden>
+        <button class="msgs-mobile-back" id="mobileBack" aria-label="Retour aux conversations">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="19" y1="12" x2="5" y2="12"/>
+                <polyline points="12 19 5 12 12 5"/>
+            </svg>
+        </button>
+        <div class="msgs-panel__avatar" id="panelAvatar">?</div>
+        <div>
+            <p class="msgs-panel__name"    id="panelName">Conversation</p>
+            <p class="msgs-panel__service" id="panelService"></p>
+        </div>
+    </div>
+
+    <!-- Zone de messages -->
+    <div class="chat-messages" id="chatBox" role="log" aria-live="polite" aria-label="Messages"></div>
+
+    <!-- Barre de saisie -->
+    <div class="chat-input-bar" id="chatInputBar" hidden>
+        <input id="messageInput"
+               class="chat-input-bar__field"
+               type="text"
+               placeholder="Écris un message…"
+               autocomplete="off"
+               aria-label="Votre message">
+        <button id="sendBtn" class="chat-input-bar__send" aria-label="Envoyer">
+            <svg viewBox="0 0 24 24" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Placeholder (aucune conversation sélectionnée) -->
+    <div class="msgs-panel__placeholder" id="panelPlaceholder">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <p>Sélectionne une conversation pour commencer</p>
+    </div>
+
+</main>
+
+<!-- ── Librairies WebSocket ─────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+<!-- ── Variables injectées par Thymeleaf ───────────────────── -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const CURRENT_USER  = /*[['${currentUser.username}']]*/ 'anonymous';
+    const INITIAL_CONV  = /*[[${activeConvId}]]*/ null;
+    /*]]>*/
+</script>
+
+<script th:src="@{/js/messages.js}"></script>
+
+</body>
+</html>

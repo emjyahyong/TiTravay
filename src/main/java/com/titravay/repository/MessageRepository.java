@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
@@ -45,5 +46,20 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             @Param("conversationId") Long conversationId,
             @Param("userId")         Long userId,
             @Param("now")            LocalDateTime now
+    );
+
+    /** Dernier message d'une conversation (pour l'aperçu dans la sidebar). */
+    Optional<Message> findTopByConversationIdOrderByTimestampDesc(Long conversationId);
+
+    /** Nombre de messages non lus envoyés par l'autre participant. */
+    @Query(
+        "SELECT COUNT(m) FROM Message m " +
+        "WHERE m.conversation.id = :conversationId " +
+        "  AND m.sender.id <> :userId " +
+        "  AND m.readAt IS NULL"
+    )
+    long countUnreadByConversationIdAndUserId(
+            @Param("conversationId") Long conversationId,
+            @Param("userId")         Long userId
     );
 }

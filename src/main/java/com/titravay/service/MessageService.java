@@ -13,12 +13,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 public class MessageService {
@@ -28,13 +30,16 @@ public class MessageService {
     private final MessageRepository      messageRepository;
     private final ConversationRepository conversationRepository;
     private final UserRepository         userRepository;
+    private final SimpMessagingTemplate  messagingTemplate;
 
     public MessageService(MessageRepository messageRepository,
                           ConversationRepository conversationRepository,
-                          UserRepository userRepository) {
+                          UserRepository userRepository,
+                          SimpMessagingTemplate messagingTemplate) {
         this.messageRepository      = messageRepository;
         this.conversationRepository = conversationRepository;
         this.userRepository         = userRepository;
+        this.messagingTemplate      = messagingTemplate;
     }
 
     // ── API publique ─────────────────────────────────────────
@@ -63,8 +68,17 @@ public class MessageService {
         conv.setLastUpdated(saved.getTimestamp());
         conversationRepository.save(conv);
 
+        MessageResponse response = toResponse(saved);
+
+        // Notifier les deux participants sur leur canal privé (page Mes messages)
+        String otherUsername = Objects.equals(conv.getParticipant1().getId(), sender.getId())
+                ? conv.getParticipant2().getUsername()
+                : conv.getParticipant1().getUsername();
+        messagingTemplate.convertAndSendToUser(sender.getUsername(), "/queue/messages", response);
+        messagingTemplate.convertAndSendToUser(otherUsername,        "/queue/messages", response);
+
         log.debug("Message {} persisté dans conversation {}", saved.getId(), conversationId);
-        return toResponse(saved);
+        return response;
     }
 
     /**

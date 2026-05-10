@@ -1,6 +1,7 @@
 package com.titravay.controller;
 
 import com.titravay.dto.ConversationStartResponse;
+import com.titravay.dto.ConversationSummaryDTO;
 import com.titravay.dto.MessageResponse;
 import com.titravay.service.ConversationService;
 import com.titravay.service.MessageService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/conversations")
@@ -29,6 +31,12 @@ public class ConversationController {
                                   MessageService messageService) {
         this.conversationService = conversationService;
         this.messageService      = messageService;
+    }
+
+    /** Résumés de toutes les conversations de l'utilisateur (sidebar Mes messages). */
+    @GetMapping
+    public List<ConversationSummaryDTO> getSummaries(Principal principal) {
+        return conversationService.getSummaries(principal);
     }
 
     /**
