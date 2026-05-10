@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
@@ -47,6 +48,11 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             @Param("userId")         Long userId,
             @Param("now")            LocalDateTime now
     );
+
+    /** Supprime en masse tous les messages appartenant aux conversations listées (suppression de compte/service). */
+    @Modifying
+    @Query("DELETE FROM Message m WHERE m.conversation.id IN :ids")
+    void deleteAllByConversationIdIn(@Param("ids") List<Long> ids);
 
     /** Dernier message d'une conversation (pour l'aperçu dans la sidebar). */
     Optional<Message> findTopByConversationIdOrderByTimestampDesc(Long conversationId);

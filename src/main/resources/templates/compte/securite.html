@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sécurité — TiTravay</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/compte.css}">
+</head>
+<body class="compte-page">
+
+<div th:replace="~{fragments/header :: site-header}"></div>
+
+<div class="compte-layout">
+
+    <div th:replace="~{compte/_sidebar :: sidebar(activeSection='securite')}"></div>
+
+    <main class="compte-main">
+
+        <!-- ── Feedback ── -->
+        <div th:if="${successMessage}" class="alert alert--success" role="alert">
+            <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert--error" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <section class="compte-section">
+            <h2 class="compte-section__title">Changer de mot de passe</h2>
+            <p class="compte-section__subtitle">
+                Le mot de passe doit contenir au moins 8 caractères, une majuscule et un chiffre.
+            </p>
+
+            <form th:action="@{/compte/mot-de-passe}" method="post"
+                  class="compte-form" id="passwordForm" novalidate>
+
+                <div class="form-field">
+                    <label for="currentPassword" class="form-field__label">
+                        Mot de passe actuel
+                    </label>
+                    <input type="password"
+                           id="currentPassword"
+                           name="currentPassword"
+                           class="form-field__input"
+                           autocomplete="current-password"
+                           required>
+                </div>
+
+                <div class="form-field">
+                    <label for="newPassword" class="form-field__label">
+                        Nouveau mot de passe
+                    </label>
+                    <input type="password"
+                           id="newPassword"
+                           name="newPassword"
+                           class="form-field__input"
+                           autocomplete="new-password"
+                           required>
+                    <p class="form-field__hint" id="strengthHint" aria-live="polite"></p>
+                </div>
+
+                <div class="form-field">
+                    <label for="confirmPassword" class="form-field__label">
+                        Confirmer le nouveau mot de passe
+                    </label>
+                    <input type="password"
+                           id="confirmPassword"
+                           name="confirmPassword"
+                           class="form-field__input"
+                           autocomplete="new-password"
+                           required>
+                    <p class="form-field__hint" id="matchHint" aria-live="polite"></p>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn--primary" id="submitPassword">
+                        Modifier le mot de passe
+                    </button>
+                </div>
+
+            </form>
+        </section>
+
+    </main>
+</div>
+
+<div th:replace="~{fragments/footer :: site-footer}"></div>
+
+<script th:src="@{/js/compte.js}"></script>
+
+</body>
+</html>

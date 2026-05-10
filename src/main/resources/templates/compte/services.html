@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes services — TiTravay</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/compte.css}">
+</head>
+<body class="compte-page">
+
+<div th:replace="~{fragments/header :: site-header}"></div>
+
+<div class="compte-layout">
+
+    <div th:replace="~{compte/_sidebar :: sidebar(activeSection='services')}"></div>
+
+    <main class="compte-main">
+
+        <!-- ── Feedback ── -->
+        <div th:if="${successMessage}" class="alert alert--success" role="alert">
+            <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert--error" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <section class="compte-section">
+            <div class="compte-section__header">
+                <h2 class="compte-section__title">Mes services publiés</h2>
+                <a href="/services/new" class="btn btn--primary btn--sm">+ Nouveau service</a>
+            </div>
+
+            <!-- ── État vide ── -->
+            <div th:if="${#lists.isEmpty(services)}" class="services-empty">
+                <p>Vous n'avez publié aucun service pour le moment.</p>
+                <a href="/services/new" class="btn btn--primary" style="margin-top:16px">
+                    Publier mon premier service
+                </a>
+            </div>
+
+            <!-- ── Liste des services ── -->
+            <ul th:unless="${#lists.isEmpty(services)}" class="service-rows" role="list">
+
+                <li th:each="s : ${services}" class="service-row">
+
+                    <div class="service-row__info">
+                        <p class="service-row__title" th:text="${s.titre()}">Titre</p>
+                        <p class="service-row__meta">
+                            <span class="service-row__cat"
+                                  th:text="${#strings.replace(s.categorie().name(), '_', ' ')}">
+                                Catégorie
+                            </span>
+                            <span class="service-row__sep">·</span>
+                            <span th:text="${s.prix() + ' €/h'}">Prix</span>
+                            <span class="service-row__sep">·</span>
+                            <span th:text="${#temporals.format(s.datePublication(), 'dd/MM/yyyy')}">
+                                Date
+                            </span>
+                        </p>
+                    </div>
+
+                    <div class="service-row__status">
+                        <span class="badge"
+                              th:classappend="${s.statut().name() == 'ACTIVE'} ? ' badge--active' : ' badge--inactive'"
+                              th:text="${s.statut().name() == 'ACTIVE' ? 'Actif' : 'Inactif'}">
+                            Statut
+                        </span>
+                    </div>
+
+                    <div class="service-row__actions">
+                        <a th:href="@{/services/{id}(id=${s.id()})}"
+                           class="btn btn--secondary btn--sm">
+                            Voir
+                        </a>
+                        <button type="button"
+                                class="btn btn--danger btn--sm"
+                                th:attr="data-id=${s.id()}, data-title=${s.titre()}"
+                                onclick="openServiceDeleteModal(this)">
+                            Supprimer
+                        </button>
+                    </div>
+
+                </li>
+
+            </ul>
+
+        </section>
+
+    </main>
+</div>
+
+<!-- ── Modale confirmation suppression service ── -->
+<dialog id="serviceDeleteModal" class="compte-modal" aria-labelledby="serviceModalTitle">
+    <form id="serviceDeleteForm" method="post">
+
+        <h3 id="serviceModalTitle" class="compte-modal__title">Supprimer le service</h3>
+        <p class="compte-modal__body">
+            Vous êtes sur le point de supprimer
+            <strong id="serviceModalName"></strong>.
+            Cette action est irréversible et supprimera également les conversations associées.
+        </p>
+
+        <div class="compte-modal__actions">
+            <button type="button" class="btn btn--secondary"
+                    onclick="document.getElementById('serviceDeleteModal').close()">
+                Annuler
+            </button>
+            <button type="submit" class="btn btn--danger">
+                Supprimer définitivement
+            </button>
+        </div>
+
+    </form>
+</dialog>
+
+<div th:replace="~{fragments/footer :: site-footer}"></div>
+
+<script th:src="@{/js/compte.js}"></script>
+
+</body>
+</html>

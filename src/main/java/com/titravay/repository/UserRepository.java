@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
 
+    /** Vérifie l'unicité du username en excluant l'utilisateur lui-même (modification de profil). */
+    boolean existsByUsernameAndIdNot(String username, Long id);
 }

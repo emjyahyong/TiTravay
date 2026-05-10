@@ -12,4 +12,7 @@ import java.util.List;
 public interface ServiceRepository extends JpaRepository<Services, Long> {
     List<Services> findByCategorie(Services.Categorie categorie);
     List<Services> findByAuteur(User user);
+
+    /** Services d'un utilisateur, triés par date de publication décroissante. */
+    List<Services> findByAuteurOrderByDatePublicationDesc(User auteur);
 }

@@ -29,6 +29,10 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
     )
     List<Conversation> findAllByParticipantIdOrderByLastUpdatedDesc(@Param("userId") Long userId);
 
+    /** Toutes les conversations liées à un service (nécessaire avant suppression du service). */
+    @Query("SELECT c FROM Conversation c WHERE c.service.id = :serviceId")
+    List<Conversation> findAllByServiceId(@Param("serviceId") Long serviceId);
+
     /**
      * Retrouve une conversation par son id uniquement si {@code userId} en est participant.
      * Utilisé pour les vérifications d'accès dans les services et controllers.

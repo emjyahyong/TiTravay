@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon profil — TiTravay</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/compte.css}">
+</head>
+<body class="compte-page">
+
+<div th:replace="~{fragments/header :: site-header}"></div>
+
+<div class="compte-layout">
+
+    <div th:replace="~{compte/_sidebar :: sidebar(activeSection='profil')}"></div>
+
+    <main class="compte-main">
+
+        <!-- ── Feedback ── -->
+        <div th:if="${successMessage}" class="alert alert--success" role="alert">
+            <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert--error" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <!-- ── Profil ── -->
+        <section class="compte-section">
+            <h2 class="compte-section__title">Mon profil</h2>
+
+            <div class="profile-avatar-block">
+                <div class="profile-avatar__circle"
+                     th:text="${profile.username().substring(0,1).toUpperCase()}">U</div>
+            </div>
+
+            <form th:action="@{/compte/profil}" method="post" class="compte-form" id="profileForm" novalidate>
+
+                <div class="form-field">
+                    <label for="username" class="form-field__label">Nom d'utilisateur</label>
+                    <input type="text"
+                           id="username"
+                           name="username"
+                           class="form-field__input"
+                           th:value="${profile.username()}"
+                           autocomplete="username"
+                           maxlength="50"
+                           required>
+                    <p class="form-field__hint">Entre 3 et 50 caractères.</p>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-field__label">Rôle</label>
+                    <input type="text"
+                           class="form-field__input form-field__input--readonly"
+                           th:value="${profile.role()}"
+                           readonly
+                           tabindex="-1">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn--primary">Enregistrer les modifications</button>
+                </div>
+
+            </form>
+        </section>
+
+        <!-- ── Zone de danger ── -->
+        <section id="danger" class="compte-section compte-section--danger">
+            <h2 class="compte-section__title compte-section__title--danger">Zone de danger</h2>
+            <p class="compte-danger__desc">
+                La suppression de votre compte est <strong>définitive et irréversible</strong>.
+                Tous vos services, conversations et messages seront supprimés.
+            </p>
+
+            <button type="button" class="btn btn--danger" id="btnOpenDelete">
+                Supprimer mon compte
+            </button>
+        </section>
+
+    </main>
+</div>
+
+<!-- ── Modale confirmation suppression ── -->
+<dialog id="deleteModal" class="compte-modal" aria-labelledby="deleteModalTitle">
+    <form th:action="@{/compte/supprimer}" method="post" id="deleteForm">
+
+        <h3 id="deleteModalTitle" class="compte-modal__title">Supprimer mon compte</h3>
+        <p class="compte-modal__body">
+            Cette action est irréversible. Pour confirmer, saisissez votre nom d'utilisateur
+            <strong sec:authentication="name"></strong> ci-dessous.
+        </p>
+
+        <div class="form-field">
+            <label for="confirmUsername" class="form-field__label">Nom d'utilisateur</label>
+            <input type="text"
+                   id="confirmUsername"
+                   name="confirmUsername"
+                   class="form-field__input"
+                   autocomplete="off"
+                   placeholder="Confirmez votre username">
+        </div>
+
+        <div class="compte-modal__actions">
+            <button type="button" class="btn btn--secondary" id="btnCloseDelete">Annuler</button>
+            <button type="submit" class="btn btn--danger" id="btnConfirmDelete" disabled>
+                Supprimer définitivement
+            </button>
+        </div>
+
+    </form>
+</dialog>
+
+<div th:replace="~{fragments/footer :: site-footer}"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const EXPECTED_USERNAME = /*[['${profile.username()}']]*/ '';
+    /*]]>*/
+</script>
+<script th:src="@{/js/compte.js}"></script>
+
+</body>
+</html>
