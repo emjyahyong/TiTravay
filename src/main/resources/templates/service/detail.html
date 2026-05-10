@@ -118,8 +118,7 @@
             return res.json();
         })
         .then(function (data) {
-            window.location.href = '/conversations/' + data.id
-                + '/' + data.participant1Id + '-' + data.participant2Id;
+            window.location.href = '/conversations/' + data.id;
         })
         .catch(function (err) {
             console.error('Erreur :', err);

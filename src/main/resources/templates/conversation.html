@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf"        th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Messages — TiTravay</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
@@ -10,7 +12,7 @@
 
 <!-- En-tête du chat -->
 <header class="chat-header">
-    <a href="/home" class="chat-header__back" aria-label="Retour à l'accueil">
+    <a href="/home" class="chat-header__back" aria-label="Retour">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="2.5"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -26,7 +28,7 @@
 </header>
 
 <!-- Zone de messages -->
-<div id="chatBox" class="chat-messages" role="log" aria-live="polite"></div>
+<div id="chatBox" class="chat-messages" role="log" aria-live="polite" aria-label="Messages"></div>
 
 <!-- Barre de saisie -->
 <div class="chat-input-bar">
@@ -49,7 +51,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 
-<!-- Variables Thymeleaf → JS -->
+<!-- Variables Thymeleaf injectées en JS -->
 <script th:inline="javascript">
     /*<![CDATA[*/
     const CONV_ID      = /*[[${conversationId}]]*/ 0;
@@ -58,51 +60,87 @@
 </script>
 
 <script>
-    // ── Connexion WebSocket ──────────────────────────────────
-    const socket      = new SockJS('/ws');
-    const stompClient = Stomp.over(socket);
-    stompClient.debug = null; // silence les logs STOMP en prod
+    const CSRF_TOKEN  = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const CSRF_HEADER = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    // ── Connexion STOMP ──────────────────────────────────────
+    const stompClient = Stomp.over(new SockJS('/ws'));
+    stompClient.debug = null; // silence les logs en dev
 
     stompClient.connect({}, function () {
         document.getElementById('headerStatus').textContent = 'En ligne';
 
-        stompClient.subscribe('/topic/conversations/' + CONV_ID, function (frame) {
-            appendMessage(JSON.parse(frame.body));
+        // Erreurs renvoyées par ChatWebSocketController (@SendToUser)
+        stompClient.subscribe('/user/queue/errors', function (frame) {
+            showToast(frame.body, true);
         });
-    }, function () {
-        document.getElementById('headerStatus').textContent = 'Déconnecté';
+
+        // Nouveaux messages diffusés sur le topic de la conversation
+        stompClient.subscribe('/topic/conversations/' + CONV_ID, function (frame) {
+            renderMessage(JSON.parse(frame.body));
+        });
+
+        // Charger l'historique puis marquer comme lus
+        loadHistory().then(markRead);
+
+    }, function (error) {
+        document.getElementById('headerStatus').textContent = 'Déconnecté — rechargez la page';
+        showToast('Connexion perdue. Veuillez recharger la page.', true);
+        console.error('STOMP error :', error);
     });
 
-    // ── Affichage d'un message ───────────────────────────────
-    function appendMessage(msg) {
-        const isMine = msg.sender.username === CURRENT_USER;
-        const chatBox = document.getElementById('chatBox');
+    // ── Chargement de l'historique ───────────────────────────
+    async function loadHistory() {
+        try {
+            const res = await fetch('/api/conversations/' + CONV_ID + '/messages?page=0&size=50');
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const page = await res.json();
+            page.content.forEach(function (msg) { renderMessage(msg); });
+        } catch (err) {
+            console.warn('Impossible de charger l\'historique :', err.message);
+        }
+    }
 
-        // Met à jour l'avatar / nom dans le header si ce n'est pas nous
+    // ── Marquer les messages comme lus ───────────────────────
+    function markRead() {
+        if (!CSRF_TOKEN || !CSRF_HEADER) return;
+        fetch('/api/conversations/' + CONV_ID + '/read', {
+            method:  'PATCH',
+            headers: { [CSRF_HEADER]: CSRF_TOKEN }
+        }).catch(function () { /* fire-and-forget, non bloquant */ });
+    }
+
+    // ── Rendu d'un message ───────────────────────────────────
+    function renderMessage(msg) {
+        // msg.senderUsername provient de MessageResponse (REST ou WebSocket)
+        var isMine  = msg.senderUsername === CURRENT_USER;
+        var chatBox = document.getElementById('chatBox');
+
+        // Mise à jour du nom/avatar dans le header au premier message reçu
         if (!isMine) {
-            const avatar = document.getElementById('headerAvatar');
-            const name   = document.getElementById('headerName');
+            var avatar = document.getElementById('headerAvatar');
+            var name   = document.getElementById('headerName');
             if (avatar.textContent === '?') {
-                avatar.textContent = msg.sender.username.charAt(0).toUpperCase();
-                name.textContent   = msg.sender.username;
+                avatar.textContent = msg.senderUsername.charAt(0).toUpperCase();
+                name.textContent   = msg.senderUsername;
             }
         }
 
-        const wrap   = document.createElement('div');
+        var wrap = document.createElement('div');
         wrap.className = 'chat-bubble-wrap ' +
                          (isMine ? 'chat-bubble-wrap--mine' : 'chat-bubble-wrap--theirs');
 
         if (!isMine) {
-            const sender   = document.createElement('p');
+            var sender = document.createElement('p');
             sender.className  = 'chat-bubble__sender';
-            sender.textContent = msg.sender.username;
+            sender.textContent = msg.senderUsername; // textContent : pas d'injection HTML
             wrap.appendChild(sender);
         }
 
-        const bubble   = document.createElement('div');
+        var bubble = document.createElement('div');
         bubble.className  = 'chat-bubble ' +
                             (isMine ? 'chat-bubble--mine' : 'chat-bubble--theirs');
-        bubble.textContent = msg.content;
+        bubble.textContent = msg.content; // textContent : pas d'injection HTML
         wrap.appendChild(bubble);
 
         chatBox.appendChild(wrap);
@@ -111,15 +149,12 @@
 
     // ── Envoi d'un message ───────────────────────────────────
     function sendMessage() {
-        const input   = document.getElementById('messageInput');
-        const content = input.value.trim();
+        var input   = document.getElementById('messageInput');
+        var content = input.value.trim();
         if (!content) return;
 
-        stompClient.send('/app/chat/' + CONV_ID, {}, JSON.stringify({
-            sender:  { username: CURRENT_USER },
-            content: content
-        }));
-
+        // Payload JSON correspondant à SendMessageRequest { content }
+        stompClient.send('/app/chat/' + CONV_ID, {}, JSON.stringify({ content: content }));
         input.value = '';
         input.focus();
     }
@@ -131,6 +166,19 @@
             sendMessage();
         }
     });
+
+    // ── Toast de notification ────────────────────────────────
+    function showToast(message, isError) {
+        var toast = document.createElement('div');
+        toast.style.cssText =
+            'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);' +
+            'background:' + (isError ? '#c13515' : '#222222') + ';color:#fff;' +
+            'padding:8px 16px;border-radius:8px;font-size:14px;z-index:999;' +
+            'max-width:320px;text-align:center;';
+        toast.textContent = message; // textContent : pas d'injection HTML
+        document.body.appendChild(toast);
+        setTimeout(function () { toast.remove(); }, 4000);
+    }
 </script>
 
 </body>

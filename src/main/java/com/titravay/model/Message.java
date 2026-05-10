@@ -1,77 +1,66 @@
 package com.titravay.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 public class Message {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "conversation_id", nullable = false)
     private Conversation conversation;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "sender_id", nullable = false)
     private User sender;
 
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column(nullable = false)
     private LocalDateTime timestamp;
+
+    /** Null = non lu par le destinataire. Renseigné quand l'autre participant ouvre la conversation. */
+    @Column(name = "read_at")
+    private LocalDateTime readAt;
 
     public Message() {}
 
     public Message(Conversation conversation, User sender, String content, LocalDateTime timestamp) {
         this.conversation = conversation;
-        this.sender = sender;
-        this.content = content;
-        this.timestamp = timestamp;
+        this.sender       = sender;
+        this.content      = content;
+        this.timestamp    = timestamp;
     }
 
-    public Long getId() {
-        return id;
-    }
+    // ── Getters / Setters ────────────────────────────────────
 
-    public Conversation getConversation() {
-        return conversation;
-    }
+    public Long getId()                        { return id; }
 
-    public void setConversation(Conversation conversation) {
-        this.conversation = conversation;
-    }
+    public Conversation getConversation()      { return conversation; }
+    public void setConversation(Conversation c){ this.conversation = c; }
 
-    public User getSender() {
-        return sender;
-    }
+    public User getSender()                    { return sender; }
+    public void setSender(User sender)         { this.sender = sender; }
 
-    public void setSender(User sender) {
-        this.sender = sender;
-    }
+    public String getContent()                 { return content; }
+    public void setContent(String content)     { this.content = content; }
 
-    public String getContent() {
-        return content;
-    }
+    public LocalDateTime getTimestamp()              { return timestamp; }
+    public void setTimestamp(LocalDateTime timestamp){ this.timestamp = timestamp; }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
+    public LocalDateTime getReadAt()                 { return readAt; }
+    public void setReadAt(LocalDateTime readAt)      { this.readAt = readAt; }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Message message)) return false;
-        return id != null && id.equals(message.id);
+        if (!(o instanceof Message m)) return false;
+        return id != null && id.equals(m.id);
     }
 
     @Override
