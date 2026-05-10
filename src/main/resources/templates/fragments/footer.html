@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- ========================================================
+     Fragment : site-footer
+     Usage : th:replace="~{fragments/footer :: site-footer}"
+     ======================================================== -->
+<footer th:fragment="site-footer" class="site-footer">
+    <div class="site-footer__inner">
+
+        <div class="footer-cols">
+            <div>
+                <p class="footer-col__title">Support</p>
+                <ul class="footer-col__list">
+                    <li><a href="#" class="footer-col__link">Centre d'aide</a></li>
+                    <li><a href="#" class="footer-col__link">Signaler un problème</a></li>
+                    <li><a href="#" class="footer-col__link">Accessibilité</a></li>
+                </ul>
+            </div>
+            <div>
+                <p class="footer-col__title">Prestataires</p>
+                <ul class="footer-col__list">
+                    <li><a href="/services/new" class="footer-col__link">Proposer un service</a></li>
+                    <li><a href="#" class="footer-col__link">Ressources</a></li>
+                    <li><a href="#" class="footer-col__link">Forum communauté</a></li>
+                </ul>
+            </div>
+            <div>
+                <p class="footer-col__title">TiTravay</p>
+                <ul class="footer-col__list">
+                    <li><a href="#" class="footer-col__link">À propos</a></li>
+                    <li><a href="#" class="footer-col__link">Presse</a></li>
+                    <li><a href="#" class="footer-col__link">Carrières</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-legal">
+            <span class="footer-legal__text">
+                © 2025 TiTravay · La plateforme de services entre particuliers en Martinique
+            </span>
+            <div class="footer-legal__links">
+                <a href="#" class="footer-legal__text" style="text-decoration: underline;">Confidentialité</a>
+                <a href="#" class="footer-legal__text" style="text-decoration: underline;">Conditions</a>
+            </div>
+        </div>
+
+    </div>
+</footer>
+
+</body>
+</html>

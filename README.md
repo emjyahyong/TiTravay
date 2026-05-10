@@ -47,7 +47,7 @@ TiTravay est une plateforme web de services entre particuliers développée avec
 
 1. **Cloner le repository**
    ```bash
-   git clone [URL_DU_REPOSITORY]
+   git clone https://github.com/emjyahyong/TiTravay
    cd TiTravay
    ```
 
@@ -154,8 +154,8 @@ Les configurations principales se trouvent dans `application.properties` :
 ```properties
 # Base de données
 spring.datasource.url=jdbc:postgresql://localhost:5432/TiTravay
-spring.datasource.username=UserTest
-spring.datasource.password=aaa
+spring.datasource.username=[Votre Username]
+spring.datasource.password=[Votre Password]
 
 # Configuration JPA
 spring.jpa.hibernate.ddl-auto=update
@@ -203,14 +203,6 @@ spring.application.name=TiTravay
 - **Dockerisation** : Conteneurisation pour le déploiement
 - **Monitoring** : Intégration d'outils de supervision
 - **Internationalisation** : Support multilingue
-
-## Auteur / Licence
-
-### Auteur
-*Développé dans le cadre d'un projet académique ou professionnel*
-
-### Licence
-*À spécifier selon les besoins du projet*
 
 ---
 

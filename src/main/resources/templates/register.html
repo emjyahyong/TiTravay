@@ -2,38 +2,65 @@
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Inscription - TiTravay</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription — TiTravay</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-<section style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background-color: #F8FAFC;">
-    <div style="background: white; padding: 40px; border-radius: var(--border-radius); box-shadow: var(--box-shadow); width: 100%; max-width: 400px;">
-        <h2 style="font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 24px; text-align: center;">Créer un compte</h2>
-        <form th:action="@{/register}" method="post" style="display: flex; flex-direction: column; gap: 16px;">S
-            <div>
-                <label for="username" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--dark-text);">Nom d'utilisateur</label>
-                <input type="text" id="username" name="username" required
-                       style="width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: var(--border-radius); font-size: 15px;">
+
+<section class="auth-page">
+    <div class="auth-card">
+
+        <div class="auth-card__logo">
+            <a href="/home" class="auth-card__logo-text">TiTravay</a>
+        </div>
+
+        <h1 class="auth-card__title">Créer un compte</h1>
+
+        <form th:action="@{/register}" method="post" class="auth-form">
+            <div class="form-group">
+                <label for="username" class="form-label">Nom d'utilisateur</label>
+                <input type="text"
+                       id="username"
+                       name="username"
+                       required
+                       autocomplete="username"
+                       class="form-input"
+                       placeholder="Choisissez un nom d'utilisateur">
             </div>
-            <div>
-                <label for="password" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--dark-text);">Mot de passe</label>
-                <input type="password" id="password" name="password" required
-                       style="width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: var(--border-radius); font-size: 15px;">
+            <div class="form-group">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input type="password"
+                       id="password"
+                       name="password"
+                       required
+                       autocomplete="new-password"
+                       class="form-input"
+                       placeholder="Choisissez un mot de passe">
             </div>
-            <div>
-                <label for="role" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--dark-text);">Rôle</label>
-                <select name="role" id="role"
-                        style="width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: var(--border-radius); font-size: 15px;">
+            <div class="form-group">
+                <label for="role" class="form-label">Type de compte</label>
+                <select name="role" id="role" class="form-input form-select">
                     <option value="ROLE_USER">Utilisateur</option>
                     <option value="ROLE_ADMIN">Administrateur</option>
                 </select>
             </div>
-            <button type="submit" class="post-button" style="width: 100%;">S'inscrire</button>
+            <button type="submit" class="btn btn--primary btn--full">
+                Créer mon compte
+            </button>
         </form>
 
-        <p th:if="${error}" style="color: red; margin-top: 16px; text-align: center;">[[${error}]]</p>
+        <p th:if="${error}"
+           class="form-error"
+           style="margin-top: var(--space-base);"
+           th:text="${error}">Erreur</p>
+
+        <div class="auth-card__footer">
+            Déjà un compte ? <a href="/login">Se connecter</a>
+        </div>
+
     </div>
 </section>
+
 </body>
 </html>

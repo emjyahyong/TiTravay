@@ -2,30 +2,64 @@
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Connexion - TiTravay</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion — TiTravay</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-<section style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background-color: #F8FAFC;">
-    <div style="background: white; padding: 40px; border-radius: var(--border-radius); box-shadow: var(--box-shadow); width: 100%; max-width: 400px;">
-        <h2 style="font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 24px; text-align: center;">Connexion</h2>
-        <form th:action="@{/login}" method="post" style="display: flex; flex-direction: column; gap: 16px;">
-            <div>
-                <label for="username" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--dark-text);">Nom d'utilisateur</label>
-                <input type="text" id="username" name="username" required
-                       style="width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: var(--border-radius); font-size: 15px;">
+
+<section class="auth-page">
+    <div class="auth-card">
+
+        <div class="auth-card__logo">
+            <a href="/home" class="auth-card__logo-text">TiTravay</a>
+        </div>
+
+        <h1 class="auth-card__title">Connexion</h1>
+
+        <form th:action="@{/login}" method="post" class="auth-form">
+            <div class="form-group">
+                <label for="username" class="form-label">Nom d'utilisateur</label>
+                <input type="text"
+                       id="username"
+                       name="username"
+                       required
+                       autocomplete="username"
+                       class="form-input"
+                       placeholder="Votre nom d'utilisateur">
             </div>
-            <div>
-                <label for="password" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--dark-text);">Mot de passe</label>
-                <input type="password" id="password" name="password" required
-                       style="width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: var(--border-radius); font-size: 15px;">
+            <div class="form-group">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input type="password"
+                       id="password"
+                       name="password"
+                       required
+                       autocomplete="current-password"
+                       class="form-input"
+                       placeholder="Votre mot de passe">
             </div>
-            <button type="submit" class="post-button" style="width: 100%;">Se connecter</button>
+            <button type="submit" class="btn btn--primary btn--full">
+                Se connecter
+            </button>
         </form>
-        <p th:if="${param.error}" style="color: red; margin-top: 16px; text-align: center;">Nom d'utilisateur ou mot de passe invalide</p>
-        <p th:if="${param.logout}" style="color: var(--secondary-color); margin-top: 16px; text-align: center;">Déconnecté avec succès</p>
+
+        <p th:if="${param.error}"
+           class="form-error"
+           style="margin-top: var(--space-base);">
+            Nom d'utilisateur ou mot de passe invalide.
+        </p>
+        <p th:if="${param.logout}"
+           class="form-success"
+           style="margin-top: var(--space-base);">
+            Vous avez été déconnecté avec succès.
+        </p>
+
+        <div class="auth-card__footer">
+            Pas encore de compte ? <a href="/register">S'inscrire</a>
+        </div>
+
     </div>
 </section>
+
 </body>
 </html>

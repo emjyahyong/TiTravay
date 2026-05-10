@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- ========================================================
+     Fragment : site-header
+     Usage : th:replace="~{fragments/header :: site-header}"
+     ======================================================== -->
+<header th:fragment="site-header" class="site-header">
+    <div class="site-header__inner">
+
+        <!-- Logo -->
+        <a href="/home" class="logo">TiTravay</a>
+
+        <!-- Barre de recherche pill -->
+        <div class="search-pill">
+            <input class="search-pill__input"
+                   type="text"
+                   placeholder="Rechercher un service en Martinique…"
+                   aria-label="Rechercher">
+            <button class="search-pill__orb" aria-label="Lancer la recherche">
+                <!-- Icône loupe -->
+                <svg viewBox="0 0 24 24" stroke-width="2.5"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Actions header -->
+        <div class="header-actions">
+            <a href="/services/new" class="btn btn--secondary btn--sm">
+                <!-- Plus -->
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2.5"
+                     stroke-linecap="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5"  y1="12" x2="19" y2="12"/>
+                </svg>
+                Proposer un service
+            </a>
+            <a href="#" class="header-link">
+                <span class="header-link__icon" aria-hidden="true">✉️</span>
+                Messages
+            </a>
+            <a href="#" class="header-link">
+                <span class="header-link__icon" aria-hidden="true">👤</span>
+                Compte
+            </a>
+        </div>
+
+    </div>
+</header>
+
+<!-- ========================================================
+     Fragment : category-strip
+     Usage : th:replace="~{fragments/header :: category-strip}"
+     ======================================================== -->
+<nav th:fragment="category-strip" class="category-strip" aria-label="Catégories">
+    <div class="category-strip__inner">
+        <a href="#" class="category-item">Bricolage</a>
+        <a href="#" class="category-item">Jardinage</a>
+        <a href="#" class="category-item">Ménage</a>
+        <a href="#" class="category-item">Informatique</a>
+        <a href="#" class="category-item">Cours particuliers</a>
+        <a href="#" class="category-item">Beauté &amp; Bien-être</a>
+        <a href="#" class="category-item">Transport</a>
+        <a href="#" class="category-item">Assistance admin.</a>
+        <a href="#" class="category-item">Événementiel</a>
+        <a href="#" class="category-item">Autres</a>
+    </div>
+</nav>
+
+</body>
+</html>

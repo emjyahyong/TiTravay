@@ -2,51 +2,99 @@
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Ajouter un service - TiTravay</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposer un service — TiTravay</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-<section style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background-color: #F8FAFC;">
-    <div style="background: white; padding: 40px; border-radius: var(--border-radius); box-shadow: var(--box-shadow); width: 100%; max-width: 600px;">
-        <h2 style="font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 24px; text-align: center;">Ajouter un service</h2>
 
-        <form th:action="@{/services/add}" th:object="${service}" method="post" style="display: flex; flex-direction: column; gap: 16px;">
-            <div>
-                <label for="titre" style="display: block; font-weight: 600; margin-bottom: 8px;">Titre</label>
-                <input type="text" id="titre" th:field="*{titre}" required style="width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: var(--border-radius);">
+<div th:replace="~{fragments/header :: site-header}"></div>
+
+<main class="form-page">
+    <div class="form-card">
+
+        <h1 class="form-card__title">Proposer un service</h1>
+        <p class="form-card__subtitle">
+            Partagez vos compétences avec la communauté martiniquaise.
+        </p>
+
+        <form th:action="@{/services/add}"
+              th:object="${service}"
+              method="post"
+              class="form-stack">
+
+            <div class="form-group">
+                <label for="titre" class="form-label">Titre du service</label>
+                <input type="text"
+                       id="titre"
+                       th:field="*{titre}"
+                       required
+                       class="form-input"
+                       placeholder="Ex : Cours de mathématiques niveau lycée">
             </div>
 
-            <div>
-                <label for="description" style="display: block; font-weight: 600; margin-bottom: 8px;">Description</label>
-                <textarea id="description" th:field="*{description}" rows="4" style="width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: var(--border-radius);"></textarea>
+            <div class="form-group">
+                <label for="description" class="form-label">Description</label>
+                <textarea id="description"
+                          th:field="*{description}"
+                          class="form-input form-textarea"
+                          placeholder="Décrivez votre service, votre expérience, vos disponibilités…"></textarea>
             </div>
 
-            <div>
-                <label for="prix" style="display: block; font-weight: 600; margin-bottom: 8px;">Prix (€)</label>
-                <input type="number" id="prix" th:field="*{prix}" step="0.01" required style="width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: var(--border-radius);">
+            <div class="form-group">
+                <label for="prix" class="form-label">Tarif horaire (€/h)</label>
+                <input type="number"
+                       id="prix"
+                       th:field="*{prix}"
+                       step="0.01"
+                       min="0"
+                       required
+                       class="form-input"
+                       placeholder="Ex : 25">
             </div>
 
-            <div>
-                <label for="localisation" style="display: block; font-weight: 600; margin-bottom: 8px;">Localisation</label>
-                <input type="text" id="localisation" th:field="*{localisation}" required style="width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: var(--border-radius);">
+            <div class="form-group">
+                <label for="localisation" class="form-label">Commune</label>
+                <input type="text"
+                       id="localisation"
+                       th:field="*{localisation}"
+                       required
+                       class="form-input"
+                       placeholder="Ex : Fort-de-France">
             </div>
 
-            <div>
-                <label for="imageUrl" style="display: block; font-weight: 600; margin-bottom: 8px;">URL de l'image</label>
-                <input type="text" id="imageUrl" th:field="*{imageUrl}" style="width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: var(--border-radius);">
+            <div class="form-group">
+                <label for="imageUrl" class="form-label">URL de la photo (optionnel)</label>
+                <input type="url"
+                       id="imageUrl"
+                       th:field="*{imageUrl}"
+                       class="form-input"
+                       placeholder="https://…">
             </div>
 
-            <div>
-                <label for="categorie" style="display: block; font-weight: 600; margin-bottom: 8px;">Catégorie</label>
-                <select id="categorie" th:field="*{categorie}" required style="width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: var(--border-radius);">
-                    <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}">Catégorie</option>
+            <div class="form-group">
+                <label for="categorie" class="form-label">Catégorie</label>
+                <select id="categorie"
+                        th:field="*{categorie}"
+                        required
+                        class="form-input form-select">
+                    <option value="">Choisissez une catégorie</option>
+                    <option th:each="cat : ${categories}"
+                            th:value="${cat}"
+                            th:text="${cat}">Catégorie</option>
                 </select>
             </div>
 
-            <button type="submit" class="post-button" style="width: 100%;">Publier</button>
+            <div class="form-actions">
+                <a href="/home" class="btn btn--secondary">Annuler</a>
+                <button type="submit" class="btn btn--primary">Publier mon service</button>
+            </div>
+
         </form>
     </div>
-</section>
+</main>
+
+<div th:replace="~{fragments/footer :: site-footer}"></div>
+
 </body>
 </html>

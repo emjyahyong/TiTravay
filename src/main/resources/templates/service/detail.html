@@ -2,138 +2,133 @@
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <title th:text="'Détail - ' + ${service.titre}">Détail du service</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf"        th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title th:text="${service.titre} + ' — TiTravay'">Service — TiTravay</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-<header>
-    <div class="header-container">
-        <a href="/" class="logo">TiTravay</a>
-        <div class="search-bar">
-            <input type="text" placeholder="Rechercher des prestations de service...">
-            <button class="search-button">🔍</button>
-        </div>
-        <a href="/services/new">
-            <button class="post-button"><span class="plus-icon">+</span> Proposer un service</button>
-        </a>
-        <div class="user-menu">
-            <a href="#" class="menu-item"><span class="menu-icon">✉️</span> Messages</a>
-            <a href="#" class="menu-item"><span class="menu-icon">👤</span> Compte</a>
-        </div>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: site-header}"></div>
+<div th:replace="~{fragments/header :: category-strip}"></div>
 
-<nav>
-    <div class="nav-container">
-        <a href="#" class="nav-item">Bricolage</a>
-        <a href="#" class="nav-item">Jardinage</a>
-        <a href="#" class="nav-item">Ménage</a>
-        <a href="#" class="nav-item">Informatique</a>
-        <a href="#" class="nav-item">Cours particuliers</a>
-        <a href="#" class="nav-item">Beauté & Bien-être</a>
-        <a href="#" class="nav-item">Transport</a>
-        <a href="#" class="nav-item">Assistance administrative</a>
-        <a href="#" class="nav-item">Événementiel</a>
-        <a href="#" class="nav-item">Autres</a>
-    </div>
-</nav>
+<section class="detail-section">
+    <div class="container--narrow">
+        <div class="detail-grid">
 
-<section style="padding: 40px 20px; background-color: #F8FAFC; min-height: 100vh;">
-    <div style="max-width: 1100px; margin: auto; display: grid; grid-template-columns: 2fr 1fr; gap: 32px;">
+            <!-- ── Colonne gauche : contenu ── -->
+            <div class="detail-main">
 
-        <!-- Partie gauche -->
-        <div style="background: white; padding: 24px; border-radius: var(--border-radius); box-shadow: var(--box-shadow);">
-            <img th:src="${service.imageUrl}" alt="Image du service"
-                 style="width: 100%; border-radius: var(--border-radius); margin-bottom: 24px;" />
-            <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 12px; color: var(--primary-color);"
-                th:text="${service.titre}">Titre du service</h1>
-            <p style="font-size: 18px; font-weight: 600; color: #334155; margin-bottom: 8px;"
-               th:text="${service.prix + ' €'}">Prix</p>
-            <p style="color: #64748B;" th:text="'Publié le ' + ${dateFormatee} + ' à ' + ${service.localisation}">
-                Date et lieu</p>
-            <div style="margin-top: 24px;">
-                <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Description</h2>
-                <p style="line-height: 1.6; color: #475569;" th:text="${service.description}">Description du service ici.</p>
-            </div>
-        </div>
-
-        <!-- Partie droite -->
-        <div style="background: white; padding: 24px; border-radius: var(--border-radius); box-shadow: var(--box-shadow);">
-            <div style="display: flex; align-items: center; margin-bottom: 16px;">
-                <div style="width: 48px; height: 48px; background-color: #E2E8F0; border-radius: 50%; margin-right: 12px;">
-                    <!-- Image de profil -->
+                <!-- Photo -->
+                <div class="detail-main__photo">
+                    <img th:if="${service.imageUrl != null and !#strings.isEmpty(service.imageUrl)}"
+                         th:src="${service.imageUrl}"
+                         th:alt="${service.titre}">
+                    <span th:unless="${service.imageUrl != null and !#strings.isEmpty(service.imageUrl)}">
+                        Aucune photo disponible
+                    </span>
                 </div>
-                <div>
-                    <strong style="display: block; font-size: 16px;"
-                            th:text="${service.auteur != null && service.auteur.username != null ? service.auteur.username : 'Utilisateur introuvable'}">
-                        Nom utilisateur
-                    </strong>
+
+                <!-- Catégorie + Titre + Méta -->
+                <p class="detail-main__category" th:text="${service.categorie}">Catégorie</p>
+                <h1 class="detail-main__title"   th:text="${service.titre}">Titre du service</h1>
+
+                <div class="detail-main__meta">
+                    <span>📍 <span th:text="${service.localisation}">Localisation</span></span>
+                    <span class="detail-main__meta-sep">·</span>
+                    <span>Publié le <span th:text="${dateFormatee}">Date</span></span>
                 </div>
+
+                <div class="detail-main__divider"></div>
+
+                <!-- Description -->
+                <h2 class="detail-main__section-title">Description</h2>
+                <p class="detail-main__description" th:text="${service.description}">
+                    Description du service ici.
+                </p>
+
             </div>
 
-            <!-- Bouton de conversation -->
-            <button id="btnConv" th:attr="data-id=${service.id}"
-                    style="width: 100%; padding: 12px; border: none; border-radius: var(--border-radius); font-weight: 600; background-color: var(--secondary-color); color: white;">
-                Démarrer conversation
-            </button>
+            <!-- ── Colonne droite : carte de contact ── -->
+            <aside>
+                <div class="contact-card">
 
-            <p style="text-align: center; font-size: 12px; color: #94A3B8; margin-top: 12px;">
-                Paiement sécurisé indisponible
-            </p>
+                    <!-- Prix -->
+                    <p class="contact-card__price">
+                        <span th:text="${service.prix + ' €'}">Prix</span>
+                        <span>/h</span>
+                    </p>
+
+                    <!-- Prestataire -->
+                    <div class="contact-card__author">
+                        <div class="author-avatar">
+                            <span th:text="${service.auteur != null
+                                            ? service.auteur.username.substring(0,1).toUpperCase()
+                                            : '?'}">A</span>
+                        </div>
+                        <div>
+                            <p class="author-name"
+                               th:text="${service.auteur != null ? service.auteur.username : 'Utilisateur introuvable'}">
+                                Nom utilisateur
+                            </p>
+                            <p class="author-label">Prestataire</p>
+                        </div>
+                    </div>
+
+                    <!-- CTA conversation -->
+                    <button id="btnConv"
+                            th:attr="data-id=${service.id}"
+                            class="btn btn--primary btn--full">
+                        Contacter le prestataire
+                    </button>
+
+                    <p class="contact-card__note">Paiement sécurisé non disponible</p>
+
+                </div>
+            </aside>
+
         </div>
     </div>
 </section>
 
-<footer>
-    <p>© 2025 TiTravay - La plateforme de services entre particuliers</p>
-</footer>
+<div th:replace="~{fragments/footer :: site-footer}"></div>
 
-<!-- Script JavaScript -->
 <script>
-    document.getElementById('btnConv').addEventListener('click', () => {
-        const btn = document.getElementById('btnConv');
+    document.getElementById('btnConv').addEventListener('click', function () {
+        const btn      = this;
         const serviceId = btn.getAttribute('data-id');
+        const token    = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const header   = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-        const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-        const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+        if (!token || !header) return;
 
-        if (!token || !header) {
-            console.error("CSRF token ou header manquant !");
-            return;
-        }
+        btn.disabled    = true;
+        btn.textContent = 'Chargement…';
 
-        fetch(`/api/conversations/service/${serviceId}`, {
+        fetch('/api/conversations/service/' + serviceId, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 [header]: token
             }
         })
-            .then(res => {
-                if (!res.ok) throw new Error(`Erreur HTTP ${res.status}`);
-                return res.json();
-            })
-            .then(data => {
-                // Affiche tout l'objet data dans une alerte lisible
-                //alert("Données reçues :\n" + JSON.stringify(data, null, 2));
-
-                const currentUserId = data.participant1Id;
-                const otherUserId = data.participant2Id;
-                //alert(currentUserId);
-
-                window.location.href = `/conversations/${data.id}/${currentUserId}-${otherUserId}`;
-            })
-            .catch(err => {
-                console.error('Erreur lors de la création de la conversation:', err);
-                alert('Une erreur est survenue.');
-            });
+        .then(function (res) {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        })
+        .then(function (data) {
+            window.location.href = '/conversations/' + data.id
+                + '/' + data.participant1Id + '-' + data.participant2Id;
+        })
+        .catch(function (err) {
+            console.error('Erreur :', err);
+            btn.disabled    = false;
+            btn.textContent = 'Contacter le prestataire';
+            alert('Une erreur est survenue. Veuillez réessayer.');
+        });
     });
 </script>
-
 
 </body>
 </html>
